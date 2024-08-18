@@ -1,0 +1,38 @@
+name: Playwright Tests
+
+# Dispara o workflow em push ou pull_request para a branch main (você pode ajustar conforme necessário)
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out the repository
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18' # Especifique a versão do Node.js que você está usando
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run Playwright tests
+      run: npx playwright test
+      env:
+        CI: true # Define a variável CI para garantir que o ambiente de CI seja detectado
+    
+    - name: Upload Playwright report
+      if: always() # Isso garante que o relatório seja carregado mesmo se os testes falharem
+      uses: actions/upload-artifact@v3
+      with:
+        name: playwright-report
+        path: playwright-report
